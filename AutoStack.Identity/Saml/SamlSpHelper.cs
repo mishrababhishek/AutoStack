@@ -1,4 +1,5 @@
 ﻿using AutoStack.Identity.Xml;
+using AutoStack.Identity.Xml.Signing;
 using System.Globalization;
 using System.Text;
 using System.Xml;
@@ -21,7 +22,7 @@ public sealed class SamlSpHelper
         _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
-    public SamlAuthnRequest BuildAuthnRequest(string destination)
+    public async Task<SamlAuthnRequest> BuildAuthnRequest(string destination, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(destination);
 
@@ -53,7 +54,20 @@ public sealed class SamlSpHelper
                     .WithPrefix(SamlConstants.Prefix.Assertion)
                     .WithText(_options.RequestedAuthnContextClassRef)));
 
-        var xml = builder.BuildString();
+        var doc = builder.BuildDocument();
+
+        if (_options.Signer is not null)
+        {
+            var signatureOptions = new XmlSignatureOptions
+            {
+                ReferenceId = requestId,
+                InsertionMode = SignatureInsertionMode.AfterFirstChild
+            };
+
+            doc = await _options.Signer.SignAsync(doc, signatureOptions, cancellationToken);
+        }
+
+        var xml = doc.OuterXml;
 
         return new SamlAuthnRequest
         {

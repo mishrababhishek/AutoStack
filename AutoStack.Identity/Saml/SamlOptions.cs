@@ -1,4 +1,6 @@
-﻿namespace AutoStack.Identity.Saml;
+﻿using AutoStack.Identity.Xml.Signing;
+
+namespace AutoStack.Identity.Saml;
 
 public sealed record SamlSpOptions
 {
@@ -13,6 +15,7 @@ public sealed record SamlSpOptions
     public bool ForceAuthn { get; init; } = false;
 
     public string? RequestedAuthnContextClassRef { get; init; }
+    public IXmlSigner? Signer { get; init; }
 }
 
 public sealed record SamlIdpOptions
