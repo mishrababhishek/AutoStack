@@ -1,4 +1,6 @@
-﻿namespace AutoStack.Identity.Saml;
+﻿using System.Xml;
+
+namespace AutoStack.Identity.Saml;
 
 public sealed record SamlAuthnRequest
 {
@@ -32,6 +34,8 @@ public sealed record SamlResponsePayload
     public DateTimeOffset? NotBefore { get; init; }
 
     public DateTimeOffset? NotOnOrAfter { get; init; }
+
+    public required XmlDocument XmlDocument { get; init; }
 
     public IReadOnlyDictionary<string, IReadOnlyList<string>> Attributes { get; init; } = new Dictionary<string, IReadOnlyList<string>>();
 }

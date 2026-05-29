@@ -168,6 +168,7 @@ public sealed class SamlSpHelper
             SessionIndex = sessionIndex,
             NotBefore = notBefore,
             NotOnOrAfter = notOnOrAfter,
+            XmlDocument = document,
             Attributes = attributes.ToDictionary(kv => kv.Key, kv => (IReadOnlyList<string>)kv.Value.AsReadOnly(), StringComparer.Ordinal)
         };
 
